@@ -34,6 +34,7 @@ const Login = () => {
         } else {
           console.log("User has successfully logged in.");
           // Set authentication status
+          localStorage.setItem("idToken", data.idToken);
           setIsAuthenticated(true);
           setIdToken(data.idToken);
         }
