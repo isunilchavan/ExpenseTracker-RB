@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 
 const ProfileCompletion = ({ idToken }) => {
@@ -6,6 +6,43 @@ const ProfileCompletion = ({ idToken }) => {
   const [displayName, setDisplayName] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Fetch user profile data when the component mounts
+    if (idToken) {
+      fetchUserProfile(idToken);
+    }
+  }, [idToken]);
+
+  const fetchUserProfile = (idToken) => {
+    // GET request to fetch the user's profile data
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyC_HpCdTjxQoqVXs3kMseePbJWhRqaF1sQ`;
+
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        idToken: idToken,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.users && data.users.length > 0) {
+          // Extract user data from the response
+          const user = data.users[0];
+          setDisplayName(user.displayName || "");
+          setPhotoUrl(user.photoUrl || "");
+        } else {
+          setError("Failed to fetch user profile data.");
+        }
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
 
   const handleUpdateProfile = () => {
     fetch(
@@ -30,12 +67,8 @@ const ProfileCompletion = ({ idToken }) => {
         } else {
           // Profile updated successfully
           setIsEditing(false);
-          setDisplayName(data.displayName); // Update the state with new displayName
-          setPhotoUrl(data.photoUrl); // Update the state with new PhotoUrl
-
-          // Reset the input fields
-          setDisplayName("");
-          setPhotoUrl("");
+          setDisplayName(data.displayName); 
+          setPhotoUrl(data.photoUrl);
         }
       })
       .catch((error) => {
