@@ -3,6 +3,7 @@ import { Form, Button, Container, Alert, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import ProfileCompletion from "./ProfileCompletion";
+import EmailVerification from "./EmailVerification";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -50,6 +51,7 @@ const Login = () => {
             <>
               <Dashboard />
               <ProfileCompletion idToken={idToken} />
+              <EmailVerification idToken={idToken} email={email} />
             </>
           ) : (
             <>
