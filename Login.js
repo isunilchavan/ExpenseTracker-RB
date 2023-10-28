@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Form, Button, Container, Alert, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Dashboard from "./Dashboard";
+import ProfileCompletion from "./ProfileCompletion";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [idToken, setIdToken] = useState("");
 
   const handleLogin = () => {
     fetch(
@@ -32,6 +34,7 @@ const Login = () => {
           console.log("User has successfully logged in.");
           // Set authentication status
           setIsAuthenticated(true);
+          setIdToken(data.idToken);
         }
       })
       .catch((error) => {
@@ -44,7 +47,10 @@ const Login = () => {
       <Row className="justify-content-center">
         <Col md={4}>
           {isAuthenticated ? (
-            <Dashboard />
+            <>
+              <Dashboard />
+              <ProfileCompletion idToken={idToken} />
+            </>
           ) : (
             <>
               <h1 className="mt-4">Login</h1>
