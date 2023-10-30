@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import ProfileCompletion from "./ProfileCompletion";
 import EmailVerification from "./EmailVerification";
+import ExpenseTracker from "./ExpenseTracker";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -52,6 +53,7 @@ const Login = () => {
               <Dashboard />
               <ProfileCompletion idToken={idToken} />
               <EmailVerification idToken={idToken} email={email} />
+              <ExpenseTracker />
             </>
           ) : (
             <>
