@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 const ExpenseTracker = () => {
@@ -18,13 +18,50 @@ const ExpenseTracker = () => {
   };
 
   const handleAddExpense = () => {
-    setExpensesList([...expensesList, expense]);
-    setExpense({
-      amount: "",
-      description: "",
-      category: "Food",
-    });
+    // Send the expense data to Firebase
+    fetch(
+      "https://expense-trac-ad468-default-rtdb.firebaseio.com/expenses.json",
+      {
+        method: "POST",
+        body: JSON.stringify(expense),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Expense added successfully:", data);
+        setExpense({
+          amount: "",
+          description: "",
+          category: "Food",
+        });
+
+        // Update the expense list
+        setExpensesList([...expensesList, { ...expense, id: data.name }]);
+      })
+      .catch((error) => {
+        console.error("Error adding expense:", error);
+      });
   };
+
+  useEffect(() => {
+    // Fetch expenses from Firebase
+    fetch(
+      "https://expense-trac-ad468-default-rtdb.firebaseio.com/expenses.json"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data) {
+          const expenses = Object.values(data);
+          setExpensesList(expenses);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching expenses:", error);
+      });
+  }, []);
 
   return (
     <Container>
@@ -63,7 +100,11 @@ const ExpenseTracker = () => {
                 <option value="Salary">Salary</option>
               </Form.Control>
             </Form.Group>
-            <Button variant="primary" className="mt-2" onClick={handleAddExpense}>
+            <Button
+              variant="primary"
+              className="mt-2"
+              onClick={handleAddExpense}
+            >
               Add Expense
             </Button>
           </Form>
