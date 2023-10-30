@@ -33,9 +33,8 @@ const Login = () => {
           setError(data.error.message);
         } else {
           console.log("User has successfully logged in.");
-          // Set authentication status
-          localStorage.setItem("idToken", data.idToken);
           setIsAuthenticated(true);
+          localStorage.setItem("idToken", data.idToken);
           setIdToken(data.idToken);
         }
       })
@@ -91,7 +90,11 @@ const Login = () => {
                 <p className="mt-3">
                   Don't have an account? <Link to="/signup">Sign Up</Link>
                 </p>
+                <p className="mt-2">
+                  <Link to="/forgot-password">Forgot Password</Link>
+                </p>
               </Form>
+              
             </>
           )}
         </Col>
